@@ -7,10 +7,11 @@ namespace DatingApp1.Entities
 
 		public string UserName { get; set; }
 
-		public AppUser()
-		{
+		public byte[] PasswordHash { get; set; }
 
-		}
+        public byte[] PasswordSalt { get; set; }
+
+
 	}
 }
 

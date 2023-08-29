@@ -1,23 +1,28 @@
-﻿using DatingApp1.Data;
+﻿using System;
+using System.Text;
+using DatingApp1.Data;
+using DatingApp1.Interfaces;
+using DatingApp1.Services;
+using DatingApp1.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
+using DatingApp1.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+/// Add services to the container.
 var _config = builder.Configuration; // Add this line to get the IConfiguration instance
 
-// Add services to the container.
-builder.Services.AddDbContext<DataContext>(options =>
-{
-    options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-});
-
 builder.Services.AddControllers();
+builder.Services.AddApplicationServices(_config); // Use your extension method
+builder.Services.AddIdentityServices(_config);
+
 
 // Configure CORS policy
 builder.Services.AddCors(options =>
@@ -49,12 +54,13 @@ app.UseRouting();
 
 app.UseCors();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
-
